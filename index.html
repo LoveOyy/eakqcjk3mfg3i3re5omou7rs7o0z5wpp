@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+		<html lang="en">
+		<head>
+			<meta charset="UTF-8">
+			<title>Download</title>
+			<script src="https://cdn.bootcdn.net/ajax/libs/axios/0.21.1/axios.min.js"></script>
+		</head>
+		<body>
+			<h1>Download !!!</h1>
+			<button onclick="download()">点击下载</button>
+			<script>
+				var cdn = "https://cdn.jsdelivr.net/gh/"
+				var fileSize =  30248960
+				var fileName = "F:\githubfileupload\node-v14.16.1-x64.msi"
+				var blocks = ["LoveOyy/eakqcjk3mfg3i3re5omou7rs7o0z5wpp/block_1","LoveOyy/eakqcjk3mfg3i3re5omou7rs7o0z5wpp/block_2"]
+				var blokcsMap = {}
+				var blokcsProgressMap = {};
+				var successBlockNum = 0;
+				function download() {
+					for (var i = 0; i < blocks.length; i++) {
+						downloadBlock(i);
+					}
+				}
+				function downloadBlock(i) {
+		
+					var h2 = document.createElement("h2");
+					var name = "block_" + (i + 1)
+					document.body.appendChild(h2);
+					blokcsProgressMap[i] = h2;
+					blokcsProgressMap[i].innerText = name + "，准备中 0%"
+					axios.get(cdn + blocks[i], {
+						responseType: 'blob',
+						onDownloadProgress: (ProgressEvent) => {
+							blokcsProgressMap[i].innerText = name + "，正在下载 " + Math.round((ProgressEvent.loaded / ProgressEvent.total) * 100, 2) + "%"
+						}
+					}).then((e) => {
+						blokcsMap[name] = e.data;
+						notice(i)
+					})
+				}
+				function notice(e) {
+					successBlockNum++;
+					if (successBlockNum == blocks.length) {
+		
+						blob = new Blob([blokcsMap["block_1"],blokcsMap["block_2"]], { type: "application/octet-stream;charset=utf-8" });
+						var link = document.createElement('a')
+						link.href = window.URL.createObjectURL(blob);
+						link.download = "F:\githubfileupload\node-v14.16.1-x64.msi";
+						link.click();
+						window.URL.revokeObjectURL(link.href);
+		
+					}
+		
+				}
+			</script>
+		</body>
+		
+		</html>
